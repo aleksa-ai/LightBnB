@@ -199,10 +199,29 @@ exports.getAllProperties = getAllProperties;
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
+// const addProperty = function(property) {
+//   const propertyId = Object.keys(properties).length + 1;
+//   property.id = propertyId;
+//   properties[propertyId] = property;
+//   return Promise.resolve(property);
+// };
+
 const addProperty = function(property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
-};
+  console.log(property);
+  const inputObj = { ...property };
+  inputObj.cost_per_night *= 100;
+
+  const queryString = `
+  INSERT INTO properties (${Object.keys(inputObj).join(', ')})
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+  RETURNING *;
+  `;
+
+  return pool.query(queryString, Object.values(inputObj))
+  .then(res => {
+    return res.rows[0];
+  })
+  .catch(err => console.error('query string', err.stack));
+}
+
 exports.addProperty = addProperty;
