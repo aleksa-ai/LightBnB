@@ -151,25 +151,25 @@ const getAllProperties = function(options, limit = 10) {
     queryString += `AND city LIKE $${queryParams.length} `;
   }
 
-  //
+  // 3.1
   if (options.owner_id) {
     queryParams.push(options.owner_id);
     queryString += `AND owner_id = $${queryParams.length} `
   }
 
-  //
+  // 3.2
   if (options.minimum_price_per_night) {
     queryParams.push(Number(options.minimum_price_per_night));
     queryString += `AND cost_per_night > $${queryParams.length} `
   }
 
-  //
+  // 3.3
   if (options.maximum_price_per_night) {
     queryParams.push(Number(options.maximum_price_per_night));
     queryString += `AND cost_per_night < $${queryParams.length} `
   }
 
-  //
+  // 3.4
   queryString += `GROUP BY properties.id `;
   if (options.minimum_rating) {
     queryParams.push(Number(options.minimum_rating));
@@ -184,8 +184,6 @@ const getAllProperties = function(options, limit = 10) {
   `;
 
   // 5
-  console.log(queryString, queryParams);
-
   return pool.query(queryString, queryParams)
   .then(res => res.rows)
   .catch(err => console.error('query error', err.stack));
@@ -207,7 +205,7 @@ exports.getAllProperties = getAllProperties;
 // };
 
 const addProperty = function(property) {
-  console.log(property);
+  //console.log(property);
   const inputObj = { ...property };
   inputObj.cost_per_night *= 100;
 
